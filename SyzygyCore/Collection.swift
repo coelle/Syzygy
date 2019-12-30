@@ -172,6 +172,34 @@ public extension Collection {
         return (a1, a2)
     }
     
+    func firstMap<T>(where mapper: (Element) -> T?) -> T? {
+        for item in self {
+            if let mapped = mapper(item) { return mapped }
+        }
+        return nil
+    }
+    
+    func splitBetween(_ separator: (Element, Element) -> Bool) -> Array<Array<Element>> {
+        var splits = Array<Array<Element>>()
+        var current = Array<Element>()
+        if let f = first {
+            var previous = f
+            current.append(f)
+            for item in dropFirst() {
+                if separator(previous, item) == true {
+                    // split
+                    splits.append(current)
+                    current = [item]
+                } else {
+                    current.append(item)
+                }
+                previous = item
+            }
+        }
+        splits.append(current)
+        return splits
+    }
+    
 }
 
 public extension Collection where Element: NSObjectProtocol {
